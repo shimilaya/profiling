@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
@@ -162,7 +162,7 @@ namespace BookMonitoring
                     int totalAbsences = result != DBNull.Value ? Convert.ToInt32(result) : 0;
 
                     label1.Text = $"Total Absences: {totalAbsences}";
-                    CheckPassFail(totalAbsences, -1, -1); // Call with dummy values for evaluation and CAF
+                    CheckPassFail(totalAbsences, -1, -1); // Only pass absences
                 }
                 catch (Exception ex)
                 {
@@ -192,7 +192,7 @@ namespace BookMonitoring
                     double averageEvaluationGrade = result != DBNull.Value ? Convert.ToDouble(result) : 0;
 
                     label4.Text = $"Average Evaluation Grade: {averageEvaluationGrade:F2}";
-                    CheckPassFail(-1, averageEvaluationGrade, -1); // Call with dummy values for absences and CAF
+                    CheckPassFail(-1, averageEvaluationGrade, -1); // Only pass evaluation grade
                 }
                 catch (Exception ex)
                 {
@@ -222,7 +222,7 @@ namespace BookMonitoring
                     int totalCAFRecords = result != DBNull.Value ? Convert.ToInt32(result) : 0;
 
                     label5.Text = $"Total CAF Records: {totalCAFRecords}";
-                    CheckPassFail(-1, -1, totalCAFRecords); // Call with dummy values for absences and evaluation
+                    CheckPassFail(-1, -1, totalCAFRecords); // Only pass CAF records
                 }
                 catch (Exception ex)
                 {
@@ -233,73 +233,28 @@ namespace BookMonitoring
 
         private void CheckPassFail(int totalAbsences, double averageEvaluationGrade, int totalCAFRecords)
         {
-            bool hasFailed = false;
-
-            // Check each condition
-            if (totalAbsences > 2)
+            if (totalAbsences >= 0)
             {
-                label8.Text = "Status: Failed (Total Absences Exceeded)";
-                hasFailed = true;
-            }
-            else
-            {
-                label8.Text = "Status: Passed";
+                label8.Text = totalAbsences > 2 ? "Status: Failed (Total Absences Exceeded)" : "Status: Passed";
             }
 
-            if (averageEvaluationGrade < 85 && averageEvaluationGrade >= 0)
+            if (averageEvaluationGrade >= 0)
             {
-                label6.Text = "Status: Failed (Average Evaluation Grade Below 85)";
-                hasFailed = true;
-            }
-            else if (averageEvaluationGrade >= 0)
-            {
-                label6.Text = "Status: Passed";
+                label6.Text = averageEvaluationGrade < 85 ? "Status: Failed (Below 85)" : "Status: Passed";
             }
 
-            if (totalCAFRecords != 0)
+            if (totalCAFRecords >= 0)
             {
-                label7.Text = "Status: Failed ";
-                hasFailed = true;
+                label7.Text = totalCAFRecords > 0 ? "Status: Failed (CAF Records Exist)" : "Status: Passed";
             }
-            else
-            {
-                label7.Text = "Status: Passed";
-            }
-
-            // Determine overall status
-           
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Handle cell content click if needed
-        }
-
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
         private void label1_Click(object sender, EventArgs e) { }
         private void label4_Click(object sender, EventArgs e) { }
         private void label5_Click(object sender, EventArgs e) { }
-        private void label6_Click(object sender, EventArgs e) { }
-        private void label7_Click(object sender, EventArgs e) { }
-        private void label8_Click(object sender, EventArgs e) { }
-        private void button4_Click(object sender, EventArgs e)
-        {
-            // Implement any additional logic for button 4
-            MessageBox.Show("Button 4 clicked - implement your logic here.");
-        }
-
-        private void labelOverallStatus_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label6_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click_1(object sender, EventArgs e)
-        {
-
-        }
+        private void label6_Click_1(object sender, EventArgs e) { }
+        private void label7_Click_1(object sender, EventArgs e) { }
+        private void label8_Click_1(object sender, EventArgs e) { }
     }
 }
